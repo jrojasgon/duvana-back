@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mappings xmlns="http://dozer.sourceforge.net"
+	xsi:schemaLocation="http://dozer.sourceforge.net http://dozer.sourceforge.net/schema/beanmapping.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<mapping wildcard="true">
+		<class-a>com.inopek.beans.SinkBean</class-a>
+		<class-b>com.inopek.bean.view.SinkBeanView</class-b>
+		<field>
+			<a>address.street</a>
+			<b>address</b>
+		</field>
+		<field copy-by-reference="true">
+			<a>client.name</a>
+			<b>client</b>
+		</field>
+		<field custom-converter="com.inopek.converters.EnumCustomConverter">
+			<a>sinkTypeId</a>
+			<b>type</b>
+		</field>
+		<field custom-converter="com.inopek.converters.EnumCustomConverter">
+			<a>sinkStatusId</a>
+			<b>status</b>
+		</field>
+		<field custom-converter="com.inopek.converters.EnumCustomConverter">
+			<a>pipeLineDiameterId</a>
+			<b>diameter</b>
+		</field>
+		<field custom-converter="com.inopek.converters.EnumCustomConverter">
+			<a>plumbOptionId</a>
+			<b>plumbOption</b>
+		</field>
+	</mapping>
+</mappings>
