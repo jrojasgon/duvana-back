@@ -3,6 +3,7 @@ package com.inopek.services;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import com.inopek.beans.SinkBean;
@@ -75,6 +76,22 @@ public interface SinkService {
 	 * @param stepBefore
 	 * @return
 	 */
-	public boolean findByReferenceAndClientAndStep(String reference, String clientName, boolean stepBefore);
+	boolean findByReferenceAndClientAndStep(String reference, String clientName, boolean stepBefore);
+	
+	/**
+	 * 
+	 * @param startDate
+	 * @param endDate
+	 * @param clientName
+	 * @return
+	 */
+	List<SinkBean> findSinksByDateAndClientAndReferenceForView(Date startDate, Date endDate, String clientName, String reference);
+	
+	/**
+	 * 
+	 * @param ids
+	 * @return
+	 */
+	List<SinkBean> findSinkBeansByIds(List<Long> ids);
 	
 }

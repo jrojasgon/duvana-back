@@ -52,8 +52,18 @@ public class SinkBean implements Serializable {
 	@JsonSerialize(using = ImagePathSerializer.class)
 	private String imagePathAfterClean;
 
-	public SinkBean() {
 
+	public SinkBean(Long id, Long sinkStatusId, Long sinkTypeId, Long length, Long pipeLineDiameterId,
+			Long pipeLineLength, Long plumbOptionId, String reference, String observations) {
+		this.id = id;
+		this.sinkStatusId = sinkStatusId;
+		this.sinkTypeId = sinkTypeId;
+		this.length = length;
+		this.pipeLineDiameterId = pipeLineDiameterId;
+		this.pipeLineLength = pipeLineLength;
+		this.plumbOptionId = plumbOptionId;
+		this.reference = reference;
+		this.observations = observations;
 	}
 
 	public SinkBean(Long id, String reference) {
@@ -63,6 +73,10 @@ public class SinkBean implements Serializable {
 
 	public SinkBean(String reference) {
 		this.reference = reference;
+	}
+	
+	public SinkBean() {
+		
 	}
 
 	@Id

@@ -15,19 +15,19 @@
 		</field>
 		<field custom-converter="com.inopek.converters.EnumCustomConverter">
 			<a>sinkTypeId</a>
-			<b>type</b>
+			<b>typeEnum</b>
 		</field>
 		<field custom-converter="com.inopek.converters.EnumCustomConverter">
 			<a>sinkStatusId</a>
-			<b>status</b>
+			<b>statusEnum</b>
 		</field>
 		<field custom-converter="com.inopek.converters.EnumCustomConverter">
 			<a>pipeLineDiameterId</a>
-			<b>diameter</b>
+			<b>diameterEnum</b>
 		</field>
 		<field custom-converter="com.inopek.converters.EnumCustomConverter">
 			<a>plumbOptionId</a>
-			<b>plumbOption</b>
+			<b>plumbOptionEnum</b>
 		</field>
 	</mapping>
 </mappings>

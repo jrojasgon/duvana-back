@@ -3,6 +3,7 @@ package com.inopek.rest.controllers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -13,11 +14,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.dozer.Mapper;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -43,6 +55,7 @@ import com.inopek.beans.SinkBean;
 import com.inopek.beans.UserBean;
 import com.inopek.enums.ProfileEnum;
 import com.inopek.services.ClientService;
+import com.inopek.services.ExcelService;
 import com.inopek.services.SinkService;
 import com.inopek.services.UserService;
 
@@ -63,6 +76,8 @@ public class SinkController {
 	private ClientService clientService;
 	@Autowired
 	private Mapper mapper;
+	@Autowired
+	private ExcelService excelService;
 
 	@RequestMapping(value = "/save/{userImi}/{checkReferenceExits}/{updateAll}/{stepBefore}")
 	@ResponseBody
@@ -167,13 +182,12 @@ public class SinkController {
 
 		DateTime today = new DateTime().withTimeAtStartOfDay();
 		DateTime startDate = from == null ? today : new DateTime(from).withTimeAtStartOfDay();
-		DateTime endDate = to == null ? today : new DateTime(to).withTimeAtStartOfDay();
+		DateTime endDate = to == null ? today : new DateTime(to).plusDays(1).withTimeAtStartOfDay();
 
 		String clientName = Optional.ofNullable(clientNameParam).orElse(StringUtils.EMPTY);
 		String reference = Optional.ofNullable(referenceParam).orElse(StringUtils.EMPTY);
 
-		ArrayList<SinkBean> sinks = sinkService.findAllSinksByDateAnClientAndReference(startDate.toDate(),
-				endDate.toDate(), clientName, reference);
+		List<SinkBean> sinks = sinkService.findSinksByDateAndClientAndReferenceForView(startDate.toDate(), endDate.toDate(), clientName, reference);
 		List<SinkBeanView> sinkViewBeans = new ArrayList<>();
 		sinks.forEach(sinkBean -> sinkViewBeans.add(mapper.map(sinkBean, SinkBeanView.class)));
 		return sinkViewBeans;
@@ -182,31 +196,19 @@ public class SinkController {
 	@CrossOrigin(origins = "http://localhost:4200")
 	@RequestMapping(value = "/duvana/downloadExcel", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void downloadExcel(@RequestParam(value = "ids") List<String> ids, HttpServletResponse response) {
+	public void downloadExcel(@RequestParam(value = "ids") List<String> ids, HttpServletResponse response, HttpServletRequest request) {
 
-		DateTime today = new DateTime().withTimeAtStartOfDay();
+		List<Long> sinkIds = ids.stream().map(Long::parseLong).collect(Collectors.toList());
+		List<SinkBean> sinks = sinkService.findSinkBeansByIds(sinkIds);
 
-		DateTime startDate = today;
-		DateTime endDate = today;
-
-		SinkBean sinkBeanView = new SinkBean();
-		sinkBeanView.setReference("kaka");
-
-		SinkBean sinkBeanView2 = new SinkBean();
-		sinkBeanView2.setReference("kaka2");
-
-		// return a view which will be resolved by an excel view resolver
-		Map<String, Object> map = new HashMap<>();
-		map.put("sinks", Arrays.asList(sinkBeanView, sinkBeanView2));
-		File initialFile = new File("C:\\Users\\rojas\\Desktop\\Comptes-Serveurs.xlsx");
-		InputStream is;
 		try {
-			is = new FileInputStream(initialFile);
+			SXSSFWorkbook workbook = excelService.createWorkbook(sinks);
+			ServletOutputStream outputStream = response.getOutputStream(); 
+			workbook.write(outputStream);
 			response.setContentType(XLSX_CONTENT_TYPE);
-			response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"Comptes-Serveurs.xlsx\"");
-			IOUtils.copy(is, response.getOutputStream());
-			response.flushBuffer();
-			is.close();
+			response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"duvana-report.xlsx\"");
+			outputStream.flush();
+			outputStream.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

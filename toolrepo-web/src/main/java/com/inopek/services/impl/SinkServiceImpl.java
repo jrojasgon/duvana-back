@@ -3,6 +3,7 @@ package com.inopek.services.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -34,11 +35,11 @@ public class SinkServiceImpl implements SinkService {
 	@Autowired
 	private ClientDao clientDao;
 
-
 	@Override
 	public boolean checkReferenceExists(SinkBean sink, boolean stepBefore) {
 		ClientBean client = getClient(sink);
-		return client == null ? false : findByReferenceAndClientAndStep(sink.getReference(), client.getName(), stepBefore);
+		return client == null ? false
+				: findByReferenceAndClientAndStep(sink.getReference(), client.getName(), stepBefore);
 	}
 
 	@Override
@@ -47,8 +48,9 @@ public class SinkServiceImpl implements SinkService {
 		sinks.forEach(sink -> {
 			Optional<ClientBean> optionalClient = Optional.ofNullable(getClient(sink));
 			optionalClient.ifPresent(client -> {
-				Optional<SinkBean> optionalSink = Optional.ofNullable(sinkDao.findByReferenceAndClient(sink.getReference(), client.getId()));
-				if(optionalSink.isPresent()) {
+				Optional<SinkBean> optionalSink = Optional
+						.ofNullable(sinkDao.findByReferenceAndClient(sink.getReference(), client.getId()));
+				if (optionalSink.isPresent()) {
 					// update existing sink
 					updateExistingBeanByProfile(profile, fileNamesMap, sink, optionalSink.get());
 				} else {
@@ -67,8 +69,9 @@ public class SinkServiceImpl implements SinkService {
 	public SinkBean prepareAndSave(SinkBean sink, UserBean user) {
 		ClientBean client = getClient(sink);
 		if (client != null) {
-			Optional<SinkBean> optionalSink = Optional.ofNullable(sinkDao.findByReferenceAndClient(sink.getReference(), client.getId()));
-			if(optionalSink.isPresent()) {
+			Optional<SinkBean> optionalSink = Optional
+					.ofNullable(sinkDao.findByReferenceAndClient(sink.getReference(), client.getId()));
+			if (optionalSink.isPresent()) {
 				// update existing sink
 				return updateImagesAndData(sink, user, optionalSink.get());
 			} else {
@@ -78,12 +81,11 @@ public class SinkServiceImpl implements SinkService {
 		}
 		return null;
 	}
-	
+
 	@Override
-	public ArrayList<SinkBean> findAllSinksByDateAnClientAndReference(Date startDate, Date endDate,
-			String clientName, String reference) {
-		return sinkDao.findAllSinksByDateAnClientAndReference(startDate, endDate, clientName,
-				reference);
+	public ArrayList<SinkBean> findAllSinksByDateAnClientAndReference(Date startDate, Date endDate, String clientName,
+			String reference) {
+		return sinkDao.findAllSinksByDateAnClientAndReference(startDate, endDate, clientName, reference);
 	}
 
 	@Override
@@ -108,7 +110,7 @@ public class SinkServiceImpl implements SinkService {
 				}
 				if (sink.getImagePathAfterClean() == null) {
 					existingSink.setImagePathAfterClean(existingSink.getImagePathAfterClean());
-				}	
+				}
 				return sinkDao.save(existingSink);
 			}
 		}
@@ -118,6 +120,16 @@ public class SinkServiceImpl implements SinkService {
 	@Override
 	public boolean findByReferenceAndClientAndStep(String reference, String clientName, boolean stepBefore) {
 		return sinkDao.findByReferenceAndClientAndStep(reference, clientName, stepBefore) != null;
+	}
+	
+	@Override
+	public List<SinkBean> findSinksByDateAndClientAndReferenceForView(Date startDate, Date endDate, String clientName, String reference) {
+		return sinkDao.findAllSinksByDateAnClientAndReferenceForView(startDate, endDate, clientName, reference);
+	}
+	
+	@Override
+	public List<SinkBean> findSinkBeansByIds(List<Long> ids) {
+		return sinkDao.findSinkBeansByIds(ids);
 	}
 
 	private void setClientAndAddressAndUser(SinkBean sink, ClientBean client, UserBean user) {
@@ -174,7 +186,7 @@ public class SinkServiceImpl implements SinkService {
 		}
 		fileNamesMap.put(sink.getFileName(), !hasImageBeforeClean);
 	}
-	
+
 	private void controlDataAfterClean(HashMap<String, Boolean> fileNamesMap, SinkBean sink, SinkBean existingSink) {
 		boolean hasImageAfterClean = existingSink.getImagePathAfterClean() != null;
 		if (!hasImageAfterClean) {
@@ -183,12 +195,12 @@ public class SinkServiceImpl implements SinkService {
 		}
 		fileNamesMap.put(sink.getFileName(), !hasImageAfterClean);
 	}
-	
+
 	private void prepareSinkForCreation(SinkBean sink, UserBean user, ClientBean client) {
 		setClientAndAddressAndUser(sink, client, user);
 		sink.setSinkCreationDate(new Date());
 	}
-	
+
 	private SinkBean updateImagesAndData(SinkBean sink, UserBean user, SinkBean existingSink) {
 		existingSink.setUserUpdate(user);
 		if (sink.getImagePathAfterClean() != null) {
@@ -198,7 +210,7 @@ public class SinkServiceImpl implements SinkService {
 		}
 		return null;
 	}
-	
+
 	private void updateExistingBeanByProfile(ProfileEnum profile, HashMap<String, Boolean> fileNamesMap, SinkBean sink,
 			SinkBean existingSink) {
 		if (ProfileEnum.BEGIN.equals(profile)) {
@@ -207,4 +219,6 @@ public class SinkServiceImpl implements SinkService {
 			controlDataAfterClean(fileNamesMap, sink, existingSink);
 		}
 	}
+
+
 }

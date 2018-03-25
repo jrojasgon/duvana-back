@@ -14,33 +14,39 @@ import org.springframework.util.StringUtils;
 import com.inopek.beans.SinkBean;
 import com.inopek.dao.SinkCustomDao;
 
-
 @Transactional
 @Repository
 public class SinkDaoImpl extends AbstractDao implements SinkCustomDao {
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public ArrayList<SinkBean> findAllSinksByDateAnClientAndReference(Date startDate, Date endDate, String clientName, String reference) {
+	public ArrayList<SinkBean> findAllSinksByDateAnClientAndReference(Date startDate, Date endDate, String clientName,
+			String reference) {
 		String strQuery = "FROM SinkBean WHERE sinkCreationDate BETWEEN :startDate AND :endDate AND client.name = :clientName";
-		if (!StringUtils.isEmpty(reference)) {
-			strQuery += " AND reference = :reference";
-		}
-		Query query = getCurrentSession().createQuery(strQuery);
-		
-		query.setParameter("startDate", startDate);
-		query.setParameter("endDate", endDate);
-		query.setParameter("clientName", clientName);
-		if (!StringUtils.isEmpty(reference)) {
-			query.setParameter("reference", reference);
-		}
+		Query query = buildQueyAndParameterForClientAndReferenceAndDates(startDate, endDate, clientName, reference,
+				strQuery);
 		return (ArrayList<SinkBean>) query.list();
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SinkBean> findAllSinksByDateAnClientAndReferenceForView(Date startDate, Date endDate, String clientName,
+			String reference) {
+
+		String strQuery = "select new com.inopek.beans.SinkBean (id, sinkStatusId,sinkTypeId, length, pipeLineDiameterId, pipeLineLength, plumbOptionId, "
+				+ "reference, observations) from SinkBean "
+				+ "where sinkCreationDate between :startDate and :endDate and client.name = :clientName";
+
+		Query query = buildQueyAndParameterForClientAndReferenceAndDates(startDate, endDate, clientName, reference,
+				strQuery);
+		return (List<SinkBean>) query.list();
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public SinkBean findByReferenceAndClient(String reference, Long clientId) {
-		Query query = getCurrentSession().createQuery("FROM SinkBean WHERE reference = :reference AND client.id = :clientId");
+		Query query = getCurrentSession()
+				.createQuery("FROM SinkBean WHERE reference = :reference AND client.id = :clientId");
 		query.setParameter("reference", reference);
 		query.setParameter("clientId", clientId);
 		query.setFirstResult(0);
@@ -50,7 +56,7 @@ public class SinkDaoImpl extends AbstractDao implements SinkCustomDao {
 		}
 		return null;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public SinkBean findByReferenceAndClientAndStep(String reference, String clientName, boolean stepBefore) {
@@ -65,5 +71,20 @@ public class SinkDaoImpl extends AbstractDao implements SinkCustomDao {
 		}
 		return null;
 	}
-	
+
+	private Query buildQueyAndParameterForClientAndReferenceAndDates(Date startDate, Date endDate, String clientName,
+			String reference, String strQuery) {
+		if (!StringUtils.isEmpty(reference)) {
+			strQuery += " AND reference = :reference";
+		}
+		Query query = getCurrentSession().createQuery(strQuery);
+		query.setParameter("startDate", startDate);
+		query.setParameter("endDate", endDate);
+		query.setParameter("clientName", clientName);
+		if (!StringUtils.isEmpty(reference)) {
+			query.setParameter("reference", reference);
+		}
+		return query;
+	}
+
 }

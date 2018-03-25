@@ -2,6 +2,7 @@ package com.inopek.dao;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.inopek.beans.SinkBean;
 
@@ -36,6 +37,16 @@ public interface SinkCustomDao {
 	 * @return
 	 */
 	ArrayList<SinkBean> findAllSinksByDateAnClientAndReference(Date startDate, Date endDate, String clientName, String reference);
+	
+	/**
+	 * 
+	 * @param startDate
+	 * @param endDate
+	 * @param clientName
+	 * @param reference
+	 * @return
+	 */
+	List<SinkBean> findAllSinksByDateAnClientAndReferenceForView(Date startDate, Date endDate, String clientName, String reference);
 	
 }
  	

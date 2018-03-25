@@ -18,10 +18,10 @@ public class SinkBeanView {
 	private String address;
 	private String observation;
 	private Date sinkCreationDate;
-	private SinkTypeEnum type;
-	private SinkStatusEnum status;
-	private SinkDiameterEnum diameter;
-	private SinkPlumbOptionEnum plumbOption;
+	private SinkTypeEnum typeEnum;
+	private SinkStatusEnum statusEnum;
+	private SinkDiameterEnum diameterEnum;
+	private SinkPlumbOptionEnum plumbOptionEnum;
 
 	
 	public Long getId() {
@@ -88,36 +88,53 @@ public class SinkBeanView {
 		this.sinkCreationDate = sinkCreationDate;
 	}
 
-	public SinkTypeEnum getType() {
-		return type;
+	public String getType() {
+		return this.getTypeEnum() == null ? "" : this.getTypeEnum().getLabel();
 	}
 
-	public void setType(SinkTypeEnum type) {
-		this.type = type;
+	public String getStatus() {
+		return this.getStatusEnum() == null ? "" : this.getStatusEnum().getLabel();
 	}
 
-	public SinkStatusEnum getStatus() {
-		return status;
+	public String getDiameter() {
+		return this.getDiameterEnum() == null ? "" : this.getDiameterEnum().getLabel();
 	}
 
-	public void setStatus(SinkStatusEnum status) {
-		this.status = status;
+	public String getPlumbOption() {
+		return this.getPlumbOptionEnum() == null ? "" : this.getPlumbOptionEnum().getLabel();
 	}
 
-	public SinkDiameterEnum getDiameter() {
-		return diameter;
+	public SinkTypeEnum getTypeEnum() {
+		return typeEnum;
 	}
 
-	public void setDiameter(SinkDiameterEnum diameter) {
-		this.diameter = diameter;
+	public void setTypeEnum(SinkTypeEnum typeEnum) {
+		this.typeEnum = typeEnum;
+	}
+	
+
+	public SinkStatusEnum getStatusEnum() {
+		return statusEnum;
 	}
 
-	public SinkPlumbOptionEnum getPlumbOption() {
-		return plumbOption;
+	public void setStatusEnum(SinkStatusEnum statusEnum) {
+		this.statusEnum = statusEnum;
 	}
 
-	public void setPlumbOption(SinkPlumbOptionEnum plumbOption) {
-		this.plumbOption = plumbOption;
+	public SinkDiameterEnum getDiameterEnum() {
+		return diameterEnum;
+	}
+
+	public void setDiameterEnum(SinkDiameterEnum diameterEnum) {
+		this.diameterEnum = diameterEnum;
+	}
+
+	public SinkPlumbOptionEnum getPlumbOptionEnum() {
+		return plumbOptionEnum;
+	}
+
+	public void setPlumbOptionEnum(SinkPlumbOptionEnum plumbOptionEnum) {
+		this.plumbOptionEnum = plumbOptionEnum;
 	}
 	
 }
