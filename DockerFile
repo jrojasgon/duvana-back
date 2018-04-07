@@ -1,0 +1,4 @@
+VOLUME /tmp
+ARG JAR_FILE
+ADD ${JAR_FILE} duvana-back.jar
+ENTRYPOINT [“java”,”-Djava.security.egd=file:/dev/./urandom”,”-jar”,”/duvana-back.jar”]
