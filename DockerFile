@@ -1,18 +1,25 @@
-FROM centos
-ENV JAVA_VERSION 8u31
-ENV BUILD_VERSION b13
-# Upgrading system
-RUN yum -y upgrade
-RUN yum -y install wget
-# Downloading & Config Java 8
-RUN wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/$JAVA_VERSION-$BUILD_VERSION/jdk-$JAVA_VERSION-linux-x64.rpm" -O /tmp/jdk-8-linux-x64.rpm
-RUN yum -y install /tmp/jdk-8-linux-x64.rpm
-RUN alternatives --install /usr/bin/java jar /usr/java/latest/bin/java 200000
-RUN alternatives --install /usr/bin/javaws javaws /usr/java/latest/bin/javaws 200000
-RUN alternatives --install /usr/bin/javac javac /usr/java/latest/bin/javac 200000
-EXPOSE 8080
-#install Spring Boot artifact
+FROM openjdk:8-jre-alpine
+
+ENV SERVER_PORT=8080
+ENV DEBUG_PORT=8000
+ENV APP_HOME /app
+ENV SPRING_BOOT_USER spring-boot
+ENV SPRING_BOOT_GROUP spring-boot
+ENV ARTIFACT_NAME duvana-back.jar
+
+COPY assets/entrypoint.sh $APP_HOME/entrypoint.sh
+
 VOLUME /tmp
-ADD /maven/duvana-back.jar duvana-back.jar
-RUN sh -c 'touch /duvana-back.jar'
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/duvana-back.jar"]
+
+RUN addgroup -S $SPRING_BOOT_USER && adduser -S -g $SPRING_BOOT_GROUP $SPRING_BOOT_USER && \
+ chmod 555 $APP_HOME/entrypoint.sh && sh -c 'touch $APP_HOME/$ARTIFACT_NAME'
+
+EXPOSE $SERVER_PORT
+EXPOSE $DEBUG_PORT
+
+WORKDIR $APP_HOME
+USER $SPRING_BOOT_USER
+
+ONBUILD COPY assets/duvana-back.jar $APP_HOME/$ARTIFACT_NAME
+
+ENTRYPOINT ["./entrypoint.sh"]
