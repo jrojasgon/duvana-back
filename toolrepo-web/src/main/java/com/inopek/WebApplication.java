@@ -8,7 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @ComponentScan
 @EnableAutoConfiguration
-@PropertySource("file:/home/ec2-user/duvana-back/application.properties")
+@PropertySource("file:/conf/data/application.properties")
 public class WebApplication {
 
 	public static void main(String[] args) {
