@@ -76,13 +76,12 @@ public class ExcelServiceImpl implements ExcelService {
 
 			int imageBeforeIdx = getImageIndex(sink.getImagePathBeforeClean(), workbook);
 			int imageAfterIdx = getImageIndex(sink.getImagePathAfterClean(), workbook);
-			;
-
-			if (imageBeforeIdx > 0) {
+			
+			if (imageBeforeIdx > -1) {
 				createImage(helper, drawing, imageBeforeIdx, rownum, 1, rowImage);
 			}
 
-			if (imageAfterIdx > 0) {
+			if (imageAfterIdx > -1) {
 				createImage(helper, drawing, imageAfterIdx, rownum, 2, rowImage);
 			}
 		});
@@ -96,13 +95,16 @@ public class ExcelServiceImpl implements ExcelService {
 			try {
 				String resizedImagePath = FilenameUtils.removeExtension(imagePath) + RESIZED_PREFIX + IMAGE_EXTENSION;
 				File file = new File(resizedImagePath);
+				LOGGER.info("Read image in :" + resizedImagePath);
 				if (file.exists()) {
+					LOGGER.info("file exists");
 					InputStream imageInputStream = new FileInputStream(file);
 					index = workbook.addPicture(IOUtils.toByteArray(imageInputStream), Workbook.PICTURE_TYPE_PNG);
+					LOGGER.info("index :" + index );
 					imageInputStream.close();
 				}
 			} catch (IOException e) {
-				LOGGER.error("Error opening ", imagePath, e);
+				LOGGER.error("Error opening " + imagePath, e);
 			}
 		}
 		return index;

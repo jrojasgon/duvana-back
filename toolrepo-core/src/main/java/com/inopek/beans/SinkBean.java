@@ -101,6 +101,7 @@ public class SinkBean implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SNK_ADDRESS_ID", nullable = false)
+	@JsonSerialize(as = AddressBean.class)
 	public AddressBean getAddress() {
 		return address;
 	}
@@ -111,6 +112,7 @@ public class SinkBean implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SNK_CLIENT_ID", nullable = false)
+	@JsonSerialize(as = ClientBean.class)
 	public ClientBean getClient() {
 		return client;
 	}
@@ -121,6 +123,7 @@ public class SinkBean implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SNK_USER_CRE_ID", nullable = false)
+	@JsonSerialize(as = UserBean.class)
 	public UserBean getUserCreation() {
 		return userCreation;
 	}
@@ -131,6 +134,7 @@ public class SinkBean implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SNK_USER_UPD_ID", nullable = false)
+	@JsonSerialize(as = UserBean.class)
 	public UserBean getUserUpdate() {
 		return userUpdate;
 	}
