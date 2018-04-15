@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
 public abstract class AbstractPathDeserializer extends JsonDeserializer<String> {
-	
+		
 	private static final String RESIZED_PREFIX = "-resized";
 	private static final String IMAGE_EXTENSION = ".png";
 	
@@ -45,7 +45,7 @@ public abstract class AbstractPathDeserializer extends JsonDeserializer<String> 
 			
 	        BufferedImage image = ImageIO.read(originalPath.toFile());
 	        BufferedImage resized = resize(image, 80, 240);
-	        File output = new File(dir.getPath().toString() + "\\" + fileName + RESIZED_PREFIX + IMAGE_EXTENSION);
+	        File output = new File(dir.getPath().toString() + File.separator + fileName + RESIZED_PREFIX + IMAGE_EXTENSION);
 	        // write resized image file
 	        ImageIO.write(resized, "png", output);
 			return destinationFile.toString();

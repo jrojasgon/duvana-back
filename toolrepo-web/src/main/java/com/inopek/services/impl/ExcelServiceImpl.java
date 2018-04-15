@@ -95,13 +95,12 @@ public class ExcelServiceImpl implements ExcelService {
 			try {
 				String resizedImagePath = FilenameUtils.removeExtension(imagePath) + RESIZED_PREFIX + IMAGE_EXTENSION;
 				File file = new File(resizedImagePath);
-				LOGGER.info("Read image in :" + resizedImagePath);
 				if (file.exists()) {
-					LOGGER.info("file exists");
 					InputStream imageInputStream = new FileInputStream(file);
 					index = workbook.addPicture(IOUtils.toByteArray(imageInputStream), Workbook.PICTURE_TYPE_PNG);
-					LOGGER.info("index :" + index );
 					imageInputStream.close();
+				} else {
+					LOGGER.error("File do not exists " + resizedImagePath);
 				}
 			} catch (IOException e) {
 				LOGGER.error("Error opening " + imagePath, e);
@@ -177,9 +176,9 @@ public class ExcelServiceImpl implements ExcelService {
 		dataSheet.addMergedRegion(new CellRangeAddress(0, 1, 1, 1));
 		dataSheet.addMergedRegion(new CellRangeAddress(0, 1, 2, 2));
 		dataSheet.addMergedRegion(new CellRangeAddress(0, 1, 3, 3));
-		dataSheet.addMergedRegion(new CellRangeAddress(0, 1, 9, 9));
+		dataSheet.addMergedRegion(new CellRangeAddress(0, 1, 10, 10));
 		dataSheet.addMergedRegion(new CellRangeAddress(0, 0, 4, 6));
-		dataSheet.addMergedRegion(new CellRangeAddress(0, 0, 7, 8));
+		dataSheet.addMergedRegion(new CellRangeAddress(0, 0, 7, 9));
 	}
 
 	private void createDataSheetHeader(CellStyle headerStyle, Sheet dataSheet) {
@@ -203,7 +202,7 @@ public class ExcelServiceImpl implements ExcelService {
 		Cell cellPlumb = mainHeader.createCell(7);
 		cellPlumb.setCellStyle(headerStyle);
 		cellPlumb.setCellValue("TUBERIA DE DESCARGA");
-		Cell cellObs = mainHeader.createCell(9);
+		Cell cellObs = mainHeader.createCell(10);
 		cellObs.setCellStyle(headerStyle);
 		cellObs.setCellValue("OBSERVACIONES");
 
@@ -212,7 +211,8 @@ public class ExcelServiceImpl implements ExcelService {
 		header.createCell(5).setCellValue("REGULAR");
 		header.createCell(6).setCellValue("MALO");
 		header.createCell(7).setCellValue("DIAMETRO");
-		header.createCell(8).setCellValue("LONGITUD");
+		header.createCell(8).setCellValue("SONDEO");
+		header.createCell(9).setCellValue("LONGITUD");
 	}
 
 }
