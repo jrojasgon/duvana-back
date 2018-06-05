@@ -86,7 +86,6 @@ public class SinkController {
 		return createdSink != null ? createdSink.getId() : null;
 	}
 
-	@CrossOrigin(origins = "http://localhost:4200")
 	@RequestMapping(value = { "/search/{startDate}/{endDate}/{clientName}/{reference}",
 			"/search/{startDate}/{endDate}/{clientName}/" })
 	@ResponseBody
@@ -142,7 +141,7 @@ public class SinkController {
 		return userService.findByImeiNumber(userImi);
 	}
 
-	@CrossOrigin(origins = "http://localhost:4200")
+	@CrossOrigin(origins = "http://ec2-18-188-7-176.us-east-2.compute.amazonaws.com:8080")
 	@RequestMapping(value = "/clients")
 	@ResponseBody
 	public List<String> getClients() {
@@ -158,7 +157,7 @@ public class SinkController {
 		return clientService.findAll();
 	}
 
-	@CrossOrigin(origins = "http://localhost:4200")
+	@CrossOrigin(origins = "http://ec2-18-188-7-176.us-east-2.compute.amazonaws.com:8080")
 	@RequestMapping(value = "/search/test")
 	@ResponseBody
 	public List<SinkBeanView> search(@RequestParam(value = "reference", required = false) String referenceParam,
@@ -179,7 +178,7 @@ public class SinkController {
 		return sinkViewBeans;
 	}
 
-	@CrossOrigin(origins = "http://localhost:4200")
+	@CrossOrigin(origins = "http://ec2-18-188-7-176.us-east-2.compute.amazonaws.com:8080")
 	@RequestMapping(value = "/duvana/downloadExcel", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void downloadExcel(@RequestParam(value = "ids") List<String> ids, HttpServletResponse response, HttpServletRequest request) {

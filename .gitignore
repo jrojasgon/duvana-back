@@ -1,0 +1,4 @@
+/toolrepo-web/target
+/toolrepo-core/target
+/toolrepo-core/*.classpath
+/toolrepo-core/*.project
